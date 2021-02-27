@@ -26,6 +26,10 @@ config :rocketpay, :basic_auth,
   username: "banana",
   password: "nanica123"
 
+config :rocketpay, Rocketpay.Guardian,
+  issuer: "rocketpay",
+  secret_key: "hfxqXshW8vvra4sfQk/EKMNIjrig086JWiaAIeV5eteaNWg+UIf8nsvkPF9gx3BH"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
