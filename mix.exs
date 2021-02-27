@@ -53,7 +53,10 @@ defmodule Rocketpay.MixProject do
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:bcrypt_elixir, "~> 2.0"},
       {:decimal, "~> 2.0"},
-      {:excoveralls, "~> 0.10", only: :test}
+      {:excoveralls, "~> 0.10", only: :test},
+      {:argon2_elixir, "~> 2.0"},
+      {:pbkdf2_elixir, "~> 1.0"},
+      {:guardian, "~> 2.1.1"}
     ]
   end
 
