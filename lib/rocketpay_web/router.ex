@@ -1,26 +1,34 @@
 defmodule RocketpayWeb.Router do
   use RocketpayWeb, :router
 
-  import Plug.BasicAuth
+  alias Rocketpay.Guardian
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  pipeline :auth do
-    plug :basic_auth, Application.compile_env!(:rocketpay, :basic_auth)
+  pipeline :jwt_authenticated do
+    plug Guardian.AuthPipeline
   end
 
   scope "/api", RocketpayWeb do
     pipe_through :api
 
-    get "/:filename", WelcomeController, :index
-
-    post "/users", UsersController, :create
+    post "/auth/signup", UsersController, :create
+    post "/auth/signin", AuthController, :create
   end
 
   scope "/api", RocketpayWeb do
-    pipe_through [:api, :auth]
+    pipe_through [:api, :jwt_authenticated]
+
+    get "/users", UsersController, :index
+    get "/users/:id", UsersController, :show
+
+    get "/me", UsersController, :show_me
+    delete "/me", UsersController, :delete
+
+    get "/friendship", FriendController, :index
+    post "/friendship", FriendController, :create
 
     post "/accounts/:id/deposit", AccountsController, :deposit
     post "/accounts/:id/withdraw", AccountsController, :withdraw
