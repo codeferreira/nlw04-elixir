@@ -1,6 +1,12 @@
 defmodule RocketpayWeb.FallbackController do
   use RocketpayWeb, :controller
 
+  def call(conn, {:error, :unauthorized}) do
+    conn
+    |> put_status(:unauthorized)
+    |> json(%{error: "Login error"})
+  end
+
   def call(conn, {:error, result}) do
     conn
     |> put_status(:bad_request)
