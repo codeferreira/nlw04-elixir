@@ -10,7 +10,7 @@ defmodule Rocketpay.Friendship do
     Multi.new()
     |> Multi.run(:user_friends_list, fn repo, _changes -> get_user_friends(repo, user) end)
     |> Multi.run(:friends, &load_friends/2)
-    |> run_transaction()
+    |> run_transaction_index()
   end
 
   defp get_user_friends(repo, user) do
@@ -42,7 +42,7 @@ defmodule Rocketpay.Friendship do
     {:ok, repo.all(friends_query)}
   end
 
-  defp run_transaction(multi) do
+  defp run_transaction_index(multi) do
     case Repo.transaction(multi) do
       {:error, _operation, reason, _changes} -> {:error, reason}
       {:ok, %{friends: friends}} -> {:ok, friends}
@@ -50,9 +50,21 @@ defmodule Rocketpay.Friendship do
   end
 
   def create_friend(attrs \\ %{}) do
-    %Friend{}
-    |> Friend.changeset(attrs)
-    |> Repo.insert()
+    Multi.new()
+    |> Multi.insert(:create_friendship, Friend.changeset(attrs))
+    |> Multi.run(:preload_data, &preload_data/2)
+    |> run_transaction_create()
+  end
+
+  defp preload_data(repo, %{create_friendship: friendship}) do
+    {:ok, repo.preload(friendship, [:user, :addresse])}
+  end
+
+  defp run_transaction_create(multi) do
+    case Repo.transaction(multi) do
+      {:error, _operation, reason, _changes} -> {:error, reason}
+      {:ok, %{preload_data: friendship}} -> {:ok, friendship}
+    end
   end
 
   def update_friend(%Friend{} = friend, attrs) do
