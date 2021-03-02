@@ -2,7 +2,6 @@ defmodule RocketpayWeb.ErrorView do
   use RocketpayWeb, :view
 
   import Ecto.Changeset, only: [traverse_errors: 2]
-
   alias Ecto.Changeset
 
   def template_not_found(template, _assigns) do
