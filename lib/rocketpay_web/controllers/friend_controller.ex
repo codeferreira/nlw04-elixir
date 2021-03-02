@@ -20,7 +20,6 @@ defmodule RocketpayWeb.FriendController do
     with {:ok, %Friend{} = friend} <- Friendship.create_friend(friend_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.friend_path(conn, :show, friend))
       |> render("show.json", friend: friend)
     end
   end
