@@ -3,12 +3,13 @@ defmodule Rocketpay.Repo.Migrations.CreateFriends do
 
   def change do
     create table(:friends) do
-      add :user_id, references(:users, type: :uuid, on_delete: :delete_all), null: false
+      add :user_id, references(:users, type: :binary_id)
       add :addresse_id, references(:users, type: :binary_id)
       add :accepted, :boolean, default: :false, null: false
 
       timestamps()
     end
 
+    create unique_index(:friends, [:user_id, :addresse_id], name: :unique_friendship)
   end
 end
