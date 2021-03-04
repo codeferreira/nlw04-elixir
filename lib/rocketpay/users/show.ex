@@ -6,6 +6,7 @@ defmodule Rocketpay.Users.Show do
   def call(%{id: user_id}) do
     Multi.new()
     |> Multi.run(:user, fn repo, _changes -> get_user(repo, user_id) end)
+    |> Multi.run(:preload_data, &preload_data/2)
     |> run_transaction()
   end
 
@@ -20,10 +21,12 @@ defmodule Rocketpay.Users.Show do
     {:ok, user}
   end
 
+  defp preload_data(repo, %{user: user}), do: {:ok, repo.preload(user, :account)}
+
   defp run_transaction(multi) do
     case Repo.transaction(multi) do
       {:error, _operation, reason, _changes} -> {:error, reason}
-      {:ok, %{user: user}} -> {:ok, user}
+      {:ok, %{preload_data: user}} -> {:ok, user}
     end
   end
 end
