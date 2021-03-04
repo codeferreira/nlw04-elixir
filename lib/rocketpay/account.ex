@@ -11,7 +11,7 @@ defmodule Rocketpay.Account do
   schema "accounts" do
     field :balance, :decimal
     belongs_to :user, User
-    has_many :transaction, Transaction
+    has_many :transactions, Transaction, foreign_key: :account_id_from
 
     timestamps()
   end
