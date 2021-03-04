@@ -16,7 +16,9 @@ defmodule Rocketpay.Users.Index do
         where: a.is_private == false
       )
 
-    users = repo.all(query)
+    users =
+      repo.all(query)
+      |> repo.preload([:account])
 
     {:ok, users}
   end
