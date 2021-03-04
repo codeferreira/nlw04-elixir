@@ -30,6 +30,8 @@ defmodule RocketpayWeb.Router do
     get "/friendship", FriendController, :index
     post "/friendship", FriendController, :create
 
+    get "/accounts/transactions", TransactionsController, :index
+
     post "/accounts/:id/deposit", AccountsController, :deposit
     post "/accounts/:id/withdraw", AccountsController, :withdraw
     post "/accounts/transaction", AccountsController, :transaction
