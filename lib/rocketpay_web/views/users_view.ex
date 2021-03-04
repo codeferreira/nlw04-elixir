@@ -11,14 +11,41 @@ defmodule RocketpayWeb.UsersView do
     %{data: render_one(user, UsersView, "user.json", as: :user)}
   end
 
+  def render("show_me.json", %{user: user}) do
+    %{data: render_one(user, UsersView, "me.json", as: :user)}
+  end
+
+  def render("me.json", %{
+        user: %User{
+          id: id,
+          name: name,
+          nickname: nickname,
+          email: email,
+          account: %Account{id: account_id, balance: balance}
+        }
+      }) do
+    %{
+      id: id,
+      name: name,
+      nickname: nickname,
+      email: email,
+      account: %{
+        id: account_id,
+        balance: balance
+      }
+    }
+  end
+
   def render("user.json", %{
         user: %User{
           id: id,
           name: name,
-          nickname: nickname
+          nickname: nickname,
+          email: email,
+          account: %Account{id: account_id}
         }
       }) do
-    %{id: id, name: name, nickname: nickname}
+    %{id: id, name: name, nickname: nickname, email: email, account_id: account_id}
   end
 
   def render("create.json", %{
